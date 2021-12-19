@@ -17,8 +17,8 @@ master:
     requests:
       # cpu: 1000m
       # memory: 2Gi
-      cpu: 250m
-      memory: 500Mi
+      cpu: 500m
+      memory: 1000Mi
   volumeSize: 2Gi
   nodeSelector: {}
   # nodeSelector:
@@ -41,8 +41,8 @@ data:
     requests:
       # cpu: 1000m
       # memory: 2Gi
-      cpu: 250m
-      memory: 500Mi
+      cpu: 500m
+      memory: 1000Mi
   volumeSize: 10Gi
   nodeSelector: {}
   # nodeSelector:
