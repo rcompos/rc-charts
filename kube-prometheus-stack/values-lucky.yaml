@@ -2364,7 +2364,7 @@ prometheus:
     #        requests:
     #          storage: 50Gi
     #    selector: {}
-    storageSpec: {}
+    storageSpec:
       volumeClaimTemplate:
        spec:
          # storageClassName: gluster
