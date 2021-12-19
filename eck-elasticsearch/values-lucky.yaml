@@ -18,7 +18,7 @@ master:
       # cpu: 1000m
       # memory: 2Gi
       cpu: 250m
-      memory: 2500Mi
+      memory: 250Mi
   volumeSize: 2Gi
   nodeSelector: {}
   # nodeSelector:
