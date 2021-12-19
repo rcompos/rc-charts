@@ -2,18 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-masterCount: 3
-dataCount: 3
+masterCount: 1
+dataCount: 1
 
 version: 7.15.0
 
 master:
   resources:
-    limits:
+    limits: {}
       # cpu: 4000m
       # memory: 16Gi
-      cpu: 500m
-      memory: 1000Mi
+      # cpu: 500m
+      # memory: 1000Mi
     requests:
       # cpu: 1000m
       # memory: 2Gi
@@ -33,11 +33,11 @@ master:
 
 data:
   resources:
-    limits:
+    limits: {}
       # cpu: 4000m
       # memory: 24Gi
-      cpu: 500m
-      memory: 1000Mi
+      # cpu: 500m
+      # memory: 1000Mi
     requests:
       # cpu: 1000m
       # memory: 2Gi
