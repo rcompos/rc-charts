@@ -103,10 +103,11 @@ service:
   type: ClusterIP
   port: 443
   annotations: {}
-  labels: {}
+  # labels: {}
+  labels:
   #  Add these labels to have metrics-server show up in `kubectl cluster-info`
-  kubernetes.io/cluster-service: "true"
-  kubernetes.io/name: "Metrics-server"
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Metrics-server"
 
 resources: {}
 
