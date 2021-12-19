@@ -1,0 +1,24 @@
+dependencies:
+- name: openebs-ndm
+  repository: https://openebs.github.io/node-disk-manager
+  version: 1.7.1
+- name: localpv-provisioner
+  repository: https://openebs.github.io/dynamic-localpv-provisioner
+  version: 3.0.1
+- name: cstor
+  repository: https://openebs.github.io/cstor-operators
+  version: 3.0.2
+- name: jiva
+  repository: https://openebs.github.io/jiva-operator
+  version: 3.0.5
+- name: zfs-localpv
+  repository: https://openebs.github.io/zfs-localpv
+  version: 1.9.8
+- name: lvm-localpv
+  repository: https://openebs.github.io/lvm-localpv
+  version: 0.8.5
+- name: nfs-provisioner
+  repository: https://openebs.github.io/dynamic-nfs-provisioner
+  version: 0.8.0
+digest: sha256:5d07221421b0b9624d154b42e3485a15bd0df3fcc6ad7d4321b656858b81e06f
+generated: "2021-12-03T16:05:06.720144329Z"
