@@ -78,6 +78,7 @@ defaultArgs:
   - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
   - --kubelet-use-node-status-port
   - --metric-resolution=15s
+  - --kubelet-insecure-tls
 
 args: []
 
@@ -105,7 +106,7 @@ service:
   annotations: {}
   # labels: {}
   labels:
-  #  Add these labels to have metrics-server show up in `kubectl cluster-info`
+    # Add these labels to have metrics-server show up in `kubectl cluster-info`
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "Metrics-server"
 
