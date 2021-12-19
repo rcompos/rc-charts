@@ -48,8 +48,8 @@ apps:
     path: ""
     targetRev: ""
     ignoreDiffs: true
-  minio:
-    name: minio 
+  kubePrometheusStack:
+    name: kube-prometheus-stack
     values: ""
     namespace: ""
     repo: ""
