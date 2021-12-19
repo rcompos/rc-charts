@@ -105,8 +105,8 @@ service:
   annotations: {}
   labels: {}
   #  Add these labels to have metrics-server show up in `kubectl cluster-info`
-  #  kubernetes.io/cluster-service: "true"
-  #  kubernetes.io/name: "Metrics-server"
+  kubernetes.io/cluster-service: "true"
+  kubernetes.io/name: "Metrics-server"
 
 resources: {}
 
