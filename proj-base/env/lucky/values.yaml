@@ -32,3 +32,11 @@ apps:
     path: ""
     targetRev: ""
     ignoreDiffs: true
+  ingressNginx:
+    name: ingress-nginx
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
+    ignoreDiffs: true
