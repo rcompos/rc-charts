@@ -4,7 +4,7 @@
 
 ## Provide a name in place of kube-prometheus-stack for `app:` labels
 ##
-nameOverride: ""
+nameOverride: "kps"
 
 ## Override the deployment namespace
 ##
@@ -44,7 +44,7 @@ defaultRules:
     kubelet: true
     kubePrometheusGeneral: true
     kubePrometheusNodeAlerting: true
-    kubePrometheusNodeRecording: true
+    kubePrometheusNodeRecording: true 
     kubernetesAbsent: true
     kubernetesApps: true
     kubernetesResources: true
