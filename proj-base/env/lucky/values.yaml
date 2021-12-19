@@ -51,7 +51,7 @@ apps:
   kubePrometheusStack:
     name: kube-prometheus-stack
     values: ""
-    namespace: ""
+    namespace: "kps"
     repo: ""
     path: ""
     targetRev: ""
