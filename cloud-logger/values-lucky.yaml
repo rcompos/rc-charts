@@ -1,0 +1,207 @@
+# Default values for cloud-logger.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # repository: 752838837007.dkr.ecr.us-west-2.amazonaws.com/cloud-logger
+  repository: 752838837007.dkr.ecr.us-west-2.amazonaws.com/fluentd-http
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# Create Kubernetes config map for fluent.conf configuration
+fluentConfConfigMap: fluent-conf
+# File holding fluent.conf contents (default: fluent.conf)
+# fluentConfFile: ""
+fluentConfFile: fluent-lucky.conf
+
+# externalSecretKeystore: /data-development-core/cloud-logger/keystore
+
+# # # Mount certificates 
+# # # A list of secrets and their paths to mount inside the pod
+# # # secretMounts: []
+# # #   - name: my-keystore
+# # #     secretName: my-keystore
+# # #     path: /path/to/file/my-keystore.keystore
+# # #     subPath: my-keystore.keystore # optional
+# secretMounts:
+#   - name: ca-crt
+#     secretName: cloud-logger-keystore
+#     path: /etc/pki/ca.pem
+#     subPath: ca.pem  # optional
+#   - name: tls-key
+#     secretName: cloud-logger-keystore
+#     path: /etc/pki/key.pem
+#     subPath: key.pem  # optional
+#   - name: tls-crt
+#     secretName: cloud-logger-keystore
+#     path: /etc/pki/cert.pem
+#     subPath: cert.pem  # optional
+
+# secretMounts:
+#   - name: fluentd-key
+#     secretName: cloud-logger-keystore
+#     path: /etc/pki/fluentd.key
+#     subPath: fluentd.key  # optional
+#   - name: fluentd-crt
+#     secretName: cloud-logger-keystore
+#     path: /etc/pki/fluentd.crt
+#     subPath: fluentd.crt  # optional
+
+volumeMountPath: /fluentd/log/s3
+volumeSize: 100Gi
+
+S3Bucket: cloud-logger-core
+S3Region: us-west-2
+S3Path: /fluentd/log/s3
+S3Timekey: 3600
+S3TimekeyWait: 600
+S3ChunkLimitSize: 512m
+S3FlushThreadCount: 16
+
+# For in-cluster Elasticsearch and Kibana
+# elasticsearchHost: elasticsearch-cloud-logger-master.elasticsearch-cloud-logger.svc
+# # elasticsearchUser: elastic
+# # elasticsearchPassword: wOv.&Hmq21v0B8xv
+# elasticsearchPort: 9200
+# # elasticsearchScheme: https
+# elasticsearchScheme: http
+# elasticsearchSSLVerify: false
+# elasticsearchTimekey: 300
+# elasticsearchTimekeyWait: 60
+# elasticsearchFlushInterval: 60s
+# # elasticsearchFlushThreadCount: 8
+# elasticsearchFlushThreadCount: 16
+# elasticsearchIndex: cloud-logger
+# elasticsearchPath: /fluentd/log/elasticsearch
+
+# AWS OpenSearch
+# elasticsearchHost: elasticsearch-master.clogger-es
+# elasticsearchUser: elastic
+# elasticsearchPassword: LucidMotors1!
+elasticsearchHost: elasticsearch-es-http.eck-elasticsearch.svc
+elasticsearchUser: elastic
+elasticsearchPassword: 6N2G5xLs9v7SDz6AImz327K8
+elasticsearchPort: 9200
+elasticsearchScheme: http
+elasticsearchSSLVerify: false
+elasticsearchTimekey: 5 
+elasticsearchTimekeyWait: 5
+elasticsearchFlushInterval: 60s
+elasticsearchFlushThreadCount: 8
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+# podSecurityContext: {}
+#   # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 1000
+
+# securityContext: {}
+#   # capabilities:
+#   #   drop:
+#   #   - ALL
+#   # readOnlyRootFilesystem: true
+#   # runAsNonRoot: true
+#   # runAsUser: 1000
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9880
+  healthzPort: 8080
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/group: zerotrust
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Owner=dataeng@lucidmotors.com,CostCenter=dataeng,Environment=dev
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/security-groups: sg-0734079b05e12b2c5
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:119558683372:certificate/68dafae6-90a5-4f8e-a32b-9055b8b914f6
+  hosts:
+
+  hosts:
+    - host: cloud-logger.core.dev.dataeng.pdx.atieva.com
+      paths:
+      - path: /*
+        backend:
+          serviceName: cloud-logger.local
+          servicePort: 80
+    # - host: cloud-logger-dev.data.lucidmotors.com
+    #   paths:
+    #   - path: /*
+    #     backend:
+    #       serviceName: cloud-logger.local
+    #       servicePort: 80
+      # - path: /healthz
+      #   backend:
+      #     serviceName: cloud-logger.local
+      #     servicePort: 8080
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+#resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+resources:
+  limits:
+    cpu: 4000m
+    memory: 16Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+# nodeSelector:
+#   dedicated: dataeng
+
+tolerations: []
+# tolerations:
+# - key: dedicated
+#   operator: Equal
+#   value: dataeng
+
+affinity: {}

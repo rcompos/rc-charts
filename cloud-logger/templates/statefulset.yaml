@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "cloud-logger.fullname" . }}
+  labels:
+    {{- include "cloud-logger.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  serviceName: {{ include "cloud-logger.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "cloud-logger.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cloud-logger.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cloud-logger.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+            # - name: healthz
+            #   containerPort: {{ .Values.service.healthzPort }}
+            #   protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: healthz
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: healthz
+          env:
+          - name: S3_BUCKET
+            value: {{ .Values.S3Bucket | quote }}
+          - name: S3_REGION
+            value: {{ .Values.S3Region | quote }}
+          - name: S3_PATH
+            value: {{ .Values.S3Path | quote }}
+          - name: S3_TIMEKEY
+            value: {{ .Values.S3Timekey | quote }}
+          - name: S3_TIMEKEY_WAIT
+            value: {{ .Values.S3TimekeyWait | quote }}
+          - name: S3_CHUNK_LIMIT_SIZE
+            value: {{ .Values.S3ChunkLimitSize | quote }}
+          - name: S3_FLUSH_THREAD_COUNT
+            value: {{ .Values.S3FlushThreadCount | quote }}
+          - name: ELASTICSEARCH_HOST
+            value: {{ .Values.elasticsearchHost | quote }}
+          - name: ELASTICSEARCH_USER
+            value: {{ .Values.elasticsearchUser | quote }}
+          - name: ELASTICSEARCH_PASSWORD
+            value: {{ .Values.elasticsearchPassword | quote }}
+          - name: ELASTICSEARCH_PORT
+            value: {{ .Values.elasticsearchPort | quote }}
+          - name: ELASTICSEARCH_SCHEME
+            value: {{ .Values.elasticsearchScheme | quote }}
+          - name: ELASTICSEARCH_SSL_VERIFY
+            value: {{ .Values.elasticsearchSSLVerify | quote }}
+          - name: ELASTICSEARCH_FLUSH_INTERVAL
+            value: {{ .Values.elasticsearchFlushInterval | quote }}
+          - name: ELASTICSEARCH_FLUSH_THREAD_COUNT
+            value: {{ .Values.elasticsearchFlushThreadCount | quote }}
+          - name: ELASTICSEARCH_TIMEKEY
+            value: {{ .Values.elasticsearchTimekey | quote }}
+          - name: ELASTICSEARCH_TIMEKEY_WAIT
+            value: {{ .Values.elasticsearchTimekeyWait | quote }}
+          - name: ELASTICSEARCH_INDEX
+            value: {{ .Values.elasticsearchIndex | quote }}
+          - name: ELASTICSEARCH_PATH
+            value: {{ .Values.elasticsearchPath | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: cloud-logger-vol
+            mountPath: {{ .Values.volumeMountPath }}
+          - name: config-volume
+            mountPath: /fluentd/etc/fluent.conf
+            subPath: fluent.conf
+          # {{- range .Values.secretMounts }}
+          # - name: {{ .name }}
+          #   mountPath: {{ .path }}
+          #   {{- if .subPath }}
+          #   subPath: {{ .subPath }}
+          #   {{- end }}
+          # {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: {{ .Values.fluentConfConfigMap }}
+        # # Volumes for certs from secrets
+        # {{- range .Values.secretMounts }}
+        # - name: {{ .name }}
+        #   secret:
+        #     secretName: {{ .secretName }}
+        # {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: cloud-logger-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      #storageClassName: ""
+      resources:
+        requests:
+          storage: {{ .Values.volumeSize }}
+
+

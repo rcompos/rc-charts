@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.fluentConfConfigMap }}
+data:
+  fluent.conf: |
+{{ if .Values.fluentConfFile }}
+{{ .Files.Get .Values.fluentConfFile | indent 4 }}
+{{ else }}
+{{ .Files.Get "fluent.conf" | indent 4 }}
+{{ end }}

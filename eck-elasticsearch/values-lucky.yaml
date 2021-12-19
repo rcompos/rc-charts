@@ -1,0 +1,73 @@
+# Default values for eck-elasticsearch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+masterCount: 1
+dataCount: 1
+
+version: 7.15.0
+
+master:
+  resources:
+    limits:
+      # cpu: 4000m
+      # memory: 16Gi
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      # cpu: 1000m
+      # memory: 2Gi
+      cpu: 250m
+      memory: 2500Mi
+  volumeSize: 2Gi
+  nodeSelector: {}
+  # nodeSelector:
+  #   dedicated: dataeng
+  tolerations: []
+  # tolerations:
+  # - key: dedicated
+  #   operator: Equal
+  #   value: dataeng
+  #   effect: NoSchedule
+  affinity: {}
+
+data:
+  resources:
+    limits:
+      # cpu: 4000m
+      # memory: 24Gi
+      cpu: 500m
+      cpu: 500Mi
+    requests:
+      # cpu: 1000m
+      # memory: 2Gi
+      cpu: 250m
+      memory: 250Mi
+  volumeSize: 10Gi
+  nodeSelector: {}
+  # nodeSelector:
+  #   dedicated: dataeng
+  tolerations: []
+  # tolerations:
+  # - key: dedicated
+  #   operator: Equal
+  #   value: dataeng
+  #   effect: NoSchedule
+  affinity: {}
+
+ingress:
+  enabled: true
+  name: elasticsearch-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: elasticsearch.blacklab.lan
+      paths:
+      - path: /
+        backend:
+          serviceName: elasticsearch-es-http
+          servicePort: 9200
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

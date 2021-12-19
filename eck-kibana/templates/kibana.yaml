@@ -1,0 +1,43 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  version: {{ .Values.version }}
+  count: {{ .Values.replicaCount }}
+  elasticsearchRef:
+    name: elasticsearch
+  ## Uncomment below if you would like to expose the Kibana ervice with a LoadBalancer instead of ingress
+  #http:
+  #  service:
+  #    spec:
+  #      type: LoadBalancer
+  http:
+    tls: {}
+    # tls:
+    #   selfSignedCertificate:
+    #     disabled: true # Access using http
+  podTemplate:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        env:
+        - name: XPACK_REPORTING_CSV_MAXSIZEBYTES
+          value: {{ .Values.xpackReportingCSVMaxsizebytes | quote }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
