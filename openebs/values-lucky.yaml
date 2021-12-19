@@ -338,7 +338,8 @@ jiva:
   # | - localpv-provisioner(enable)
   # | - openebs-ndm(enable)
 
-  enabled: false
+  # enabled: false
+  enabled: true
   openebsLocalpv:
     enabled: false
   localpv-provisioner:
