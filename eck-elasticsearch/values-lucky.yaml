@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-masterCount: 1
-dataCount: 1
+masterCount: 3
+dataCount: 3
 
 version: 7.15.0
 
@@ -18,7 +18,7 @@ master:
       # cpu: 1000m
       # memory: 2Gi
       cpu: 250m
-      memory: 500Mi
+      memory: 2500Mi
   volumeSize: 2Gi
   nodeSelector: {}
   # nodeSelector:
@@ -42,7 +42,7 @@ data:
       # cpu: 1000m
       # memory: 2Gi
       cpu: 250m
-      memory: 500Mi
+      memory: 250Mi
   volumeSize: 10Gi
   nodeSelector: {}
   # nodeSelector:
