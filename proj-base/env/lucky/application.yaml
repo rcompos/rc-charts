@@ -12,8 +12,8 @@ spec:
     server:  https://kubernetes.default.svc
   source:
     path: proj-base
-    repoURL: https://https://github.com/rcompos/rc-charts.git
-    targetRevision: dev
+    repoURL: https://github.com/rcompos/rc-charts
+    targetRevision: main
     helm:
       valueFiles:
         - env/lucky/values.yaml
