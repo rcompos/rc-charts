@@ -56,3 +56,11 @@ apps:
     path: ""
     targetRev: ""
     ignoreDiffs: true
+  metricsServer:
+    name: metrics-server
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
+    ignoreDiffs: true
