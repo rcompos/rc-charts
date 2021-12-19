@@ -248,7 +248,8 @@ podLabels: {}
 ##
 resources:
   requests:
-    memory: 16Gi
+    # memory: 16Gi
+    memory: 500Mi
 
 ## List of users to be created after minio install
 ##
